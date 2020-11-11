@@ -1,6 +1,6 @@
 %%
 % Starting point
-xini=[1 1 1 1];
+xini=[2 4 3 2];
 b = [10 30 100 354];
       
 %%
@@ -25,3 +25,4 @@ disp('Optimal vector')
 disp(xopt)
 
 % The first order optimality is the "gradient of the function"
+% Sol = [2 3 4 1]
