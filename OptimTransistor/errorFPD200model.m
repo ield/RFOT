@@ -15,8 +15,13 @@ function error=errorFPD200model(v,vgsdata,vdsdata,idsdata,draw)
 %
 %    error = error in IDS
 
-normalized=false;
-
+normalized=true;
+% In this case what it is done is that the initial values are the set to
+% all 1 and here they are denormalized. That way we avoid having errors. In
+% stead of giving many different values with many different units, we
+% should start introducing all 1 (all normalized) and then try to
+% denormalize in the objective function. That way, the function is
+% normalizing around 1.
 if normalized
     www=150*v(1);
     VTO=-0.6471*v(2);
@@ -49,7 +54,7 @@ IDS=Ids0./(1+delta*VDS.*Ids0);
 %  Error evaluation
 %
 error=(IDS-idsdata);
-error=error(:);
+error=error(:);     % Transform matrix into column vector
 
 %
 %  Plot comparison
