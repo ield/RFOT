@@ -69,31 +69,20 @@ errorRL = weightRL*(RLdesired-RL(inds));
 weightISO = 1/length(inds)/ISOdesired;
 errorISO = weightISO*(ISOdesired-ISO(inds));
 
-error_pre = [errorRL errorISO];
 
 % 3.3
-maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zone: the workinf frequency band
-cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
+delta_dir_cou = abs(DIR(inds) - COU(inds));
+diff_goal = 0.545;          % Best result so far = 0.545
+max_delta = max(delta_dir_cou);
+weightDiff = 1/length(inds)/diff_goal;
+errorDiff = weightDiff*(delta_dir_cou-diff_goal);
+% errorDiff = weightDiff*(max_delta*ones(1, length(inds))-diff_goal);
 
-
-
-if ~isempty(find(error_pre>0, 1))
-    errorDIFF = ones(1, length(inds));
-else
-    weightDIFF = 1/length(inds);
-    errorDIFF = weightDIFF*maxDELTA;
-end
-
-% separationDesired = 0.5;
-
-
-error = [errorRL errorISO errorDIFF];
-
-% error = errorISO;
+error = [errorRL errorISO errorDiff];
 
 % Step 4
 if draw
-%     cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
+    cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
 
     % Figures
     figure(1)
@@ -122,7 +111,8 @@ if draw
            'COU',...
            'Location','Best')
 
-
+    yield = length(find([errorRL errorISO]>0)) / length([errorRL errorISO]);
+    fprintf('Yield = %f %', (1-yield)*100);
 end
 
 end

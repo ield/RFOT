@@ -35,7 +35,7 @@ lb_width = 0.15;
 lb_length = 5;
 
 ub_width = 5;
-ub_length = inf;
+ub_length = inf;     % Modified based on seen results set to 16
 
 lb=[lb_width lb_width lb_width lb_width lb_length  lb_length  lb_length];
 ub=[ub_width ub_width ub_width ub_width ub_length ub_length ub_length];
