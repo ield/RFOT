@@ -1,4 +1,4 @@
-function error = errorCoupler(wref,values,f,inds,f1,f2,RLdesired,ISOdesired, draw)
+function error = errorCoupler(values,wref,f,inds,f1,f2,RLdesired,ISOdesired, draw)
 
 % Evaluates the error between the measured data and the constraints. 
 %   1. It takes the values and denormalizes the input (or not)
@@ -63,21 +63,37 @@ ISO=-20*log10(abs(s41));    % Isolation
 maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zone: the workinf frequency band
 % 3.1
 weightRL = 1/length(inds)/RLdesired;
-errorRL = weightRL*(RLdesired-RL);
+errorRL = weightRL*(RLdesired-RL(inds));
 
 % 3.2
 weightISO = 1/length(inds)/ISOdesired;
-errorISO = weightISO*(ISOdesired-ISO);
+errorISO = weightISO*(ISOdesired-ISO(inds));
+
+error_pre = [errorRL errorISO];
 
 % 3.3
-weightDIFF = 1/mean(DIR(inds));
-errorDIFF = weightDIFF*maxDELTA;
+maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zone: the workinf frequency band
+cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
+
+
+
+if ~isempty(find(error_pre>0, 1))
+    errorDIFF = ones(1, length(inds));
+else
+    weightDIFF = 1/length(inds);
+    errorDIFF = weightDIFF*maxDELTA;
+end
+
+% separationDesired = 0.5;
+
 
 error = [errorRL errorISO errorDIFF];
 
+% error = errorISO;
+
 % Step 4
 if draw
-    cenDELTA=(DIR(inds)+COU(inds))/2;           % A verga ebetween both values. It is later used to plot the lines that go with the graph
+%     cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
 
     % Figures
     figure(1)

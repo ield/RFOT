@@ -1,4 +1,4 @@
-function U = U_Coupler(wref,values,f,inds,f1,f2,RLdesired,ISOdesired, draw)
+function U = U_Coupler(values,wref,f,inds,f1,f2,RLdesired,ISOdesired, draw)
 
 % Generates the objective function that must be minimized 
 %   1. It gives values to the input parameters
@@ -16,7 +16,7 @@ function U = U_Coupler(wref,values,f,inds,f1,f2,RLdesired,ISOdesired, draw)
 %   RL, ISO desired = the objective functions
 %   draw = if it necessary to draw at the end of each iteration
 
-error = errorCoupler(wref,values,f,inds,f1,f2,RLdesired,ISOdesired, draw);
+error = errorCoupler(values,wref,f,inds,f1,f2,RLdesired,ISOdesired, draw);
 MAXe = max(error);
 
 chosennorm = 2;

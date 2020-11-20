@@ -25,21 +25,27 @@ ISOdesired=25; %(dB)
 f=linspace(1,4,121);
 inds=find(f>=f1&f<=f2);
 
-errorCoupler(wref, xini, f,inds,f1,f2,RLdesired,ISOdesired, true);
+errorCoupler(xini,wref,f,inds,f1,f2,RLdesired,ISOdesired, true);
 
 %%
 % Optimization
 %
 % Setting the vector of initial values and optimization values
+lb_width = 0.15;
+lb_length = 5;
 
-lb=[0.15 0.15 0.15 0.15 5  5  5];
-ub=[5 5 5 5 inf inf inf];
+ub_width = 5;
+ub_length = inf;
+
+lb=[lb_width lb_width lb_width lb_width lb_length  lb_length  lb_length];
+ub=[ub_width ub_width ub_width ub_width ub_length ub_length ub_length];
 %
 options=optimset('fmincon');
 options.Display='iter';
-[xopt]=fmincon(@(x) U_Coupler(wref, x, f,inds,f1,f2,RLdesired,ISOdesired, false),...
+[xopt]=fmincon(@(x) U_Coupler(x, wref, f,inds,f1,f2,RLdesired,ISOdesired, false),...
                xini,...
                [],[],[],[],lb,ub,[],...
                options);
 
-errorCoupler(wref, xopt, f,inds,f1,f2,RLdesired,ISOdesired, true);
+errorCoupler(xopt,wref,f,inds,f1,f2,RLdesired,ISOdesired, true);
+xopt
