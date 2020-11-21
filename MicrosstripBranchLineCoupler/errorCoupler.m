@@ -64,18 +64,21 @@ maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zon
 % 3.1
 weightRL = 1/length(inds)/RLdesired;
 errorRL = weightRL*(RLdesired-RL(inds));
+% errorRL = errorRL(1:2:end);
 
 % 3.2
 weightISO = 1/length(inds)/ISOdesired;
 errorISO = weightISO*(ISOdesired-ISO(inds));
-
+% errorRL = errorRL(1:2:end);
 
 % 3.3
 delta_dir_cou = abs(DIR(inds) - COU(inds));
-diff_goal = 0.545;          % Best result so far = 0.545
+diff_goal = 0.544;          % Best result so far = 0.545
 max_delta = max(delta_dir_cou);
 weightDiff = 1/length(inds)/diff_goal;
+% errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
 errorDiff = weightDiff*(delta_dir_cou-diff_goal);
+
 % errorDiff = weightDiff*(max_delta*ones(1, length(inds))-diff_goal);
 
 error = [errorRL errorISO errorDiff];
