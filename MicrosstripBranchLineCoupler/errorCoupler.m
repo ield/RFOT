@@ -73,15 +73,17 @@ errorISO = weightISO*(ISOdesired-ISO(inds));
 
 % 3.3
 delta_dir_cou = abs(DIR(inds) - COU(inds));
-diff_goal = 0.544;          % Best result so far = 0.545
+diff_goal = 0.43;          % Best result so far = 0.545
 max_delta = max(delta_dir_cou);
 weightDiff = 1/length(inds)/diff_goal;
 % errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
-errorDiff = weightDiff*(delta_dir_cou-diff_goal);
+errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
 
 % errorDiff = weightDiff*(max_delta*ones(1, length(inds))-diff_goal);
 
 error = [errorRL errorISO errorDiff];
+
+
 
 % Step 4
 if draw
@@ -114,7 +116,7 @@ if draw
            'COU',...
            'Location','Best')
 
-    yield = length(find([errorRL errorISO]>0)) / length([errorRL errorISO]);
+    yield = length(find([errorRL errorISO]>0.00001)) / length([errorRL errorISO]);
     fprintf('Yield = %f %', (1-yield)*100);
 end
 
