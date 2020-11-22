@@ -74,12 +74,10 @@ errorISO = weightISO*(ISOdesired-ISO(inds));
 % 3.3
 delta_dir_cou = abs(DIR(inds) - COU(inds));
 diff_goal = 0.43;          % Best result so far = 0.545
-max_delta = max(delta_dir_cou);
 weightDiff = 1/length(inds)/diff_goal;
-% errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
 errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
 
-% errorDiff = weightDiff*(max_delta*ones(1, length(inds))-diff_goal);
+Amax = max([DIR(inds) COU(inds)]); 
 
 error = [errorRL errorISO errorDiff];
 
@@ -111,7 +109,7 @@ if draw
     axis([min(f) max(f) 2 9])
     xlabel('Frequency (GHz)')
     ylabel('(dB)')
-    title(['\Delta = ' num2str(maxDELTA) ' dB'])
+    title(['\Delta = ' num2str(maxDELTA) ' dB A_{max} = ' num2str(Amax) 'dB'])
     legend('DIR',...
            'COU',...
            'Location','Best')
