@@ -92,9 +92,9 @@ delta_dir_cou = abs(DIR(inds) - COU(inds)); % Distance between branches, for 3.3
 switch method
     case 1      % It is onl considered the separation between coupled and direct lines
         % 3.3
-        diff_goal = 0.43;          % Best result so far = 0.545
+        diff_goal = 0.421;          % Best result so far = 0.545
         weightDiff = 1/length(inds)/diff_goal;
-        errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
+        errorDiff = weightDiff*(delta_dir_cou-diff_goal);
         error = [errorRL errorISO errorDiff];
         
     case 2
@@ -107,8 +107,9 @@ switch method
         % 3.4
         cou_dir_goal = 4.8;
         weightAtt = 1/length(inds)/cou_dir_goal;
-        errorDir = weightAtt*(DIR(inds)-cou_dir_goal).*((DIR(inds)-cou_dir_goal)>0);
-        errorCou = weightAtt*(COU(inds)-cou_dir_goal).*((COU(inds)-cou_dir_goal)>0);
+        errorDir = weightAtt*(DIR(inds)-cou_dir_goal);
+        errorCou = weightAtt*(COU(inds)-cou_dir_goal);
+
         
         error = [errorRL errorISO errorDiff errorDir errorCou];
 

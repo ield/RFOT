@@ -21,8 +21,7 @@ MAXe = max(error);
 
 % 2. In this application it is not desired to fit the functions to the
 % desired curves: it is only desired that they satisfy them. That is why
-% the u- function is set to 0: when the spec are satisfied, there is nor
-% need for further optimization
+% the u- function is set to 0: when the spec are satisfied, t
 chosennorm = 2;
 indsP=find(error>=0);
 if ~isempty(indsP)

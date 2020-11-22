@@ -11,6 +11,11 @@ wr2=1.55;
 lh1=17.30;
 lh2=17.40;
 lr=16.30;
+
+% The starting point is determinant. Other starting points lead to other
+% optimal dimensions, which are not that optimal... These initial values
+% are satisfactory because they do not imply a very high attenuation, which
+% is not good either.
 xini=[wh1 wh2 wr1 wr2 lh1 lh2 lr];
 
 % Frequency band
@@ -35,7 +40,7 @@ inds=find(f>=f1&f<=f2);
 %   2: to reduce the separation between branches and the attenuation of the
 %   coupled and direct outputs. More functions needed but the attenuation
 %   is more constant in both paths. Used for wideband applications
-method = 2;
+method = 1;
 
 errorCoupler(xini,wref,f,inds,f1,f2,RLdesired,ISOdesired, method, true);
 
