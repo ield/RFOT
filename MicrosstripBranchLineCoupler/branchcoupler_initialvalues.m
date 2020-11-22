@@ -26,6 +26,15 @@ f=linspace(1,4,121);
 inds=find(f>=f1&f<=f2);
 
 % Method
+% Depending on the method used to calculate the error it is tried to only
+% reduce the separation between branches or both the separation and the
+% attenuation, depending on the application case
+%   1: to only reduce the separation between branches: fewer functions
+%   needed but the attenuation differs with the frequency. Used for
+%   narrowband applications.
+%   2: to reduce the separation between branches and the attenuation of the
+%   coupled and direct outputs. More functions needed but the attenuation
+%   is more constant in both paths. Used for wideband applications
 method = 2;
 
 errorCoupler(xini,wref,f,inds,f1,f2,RLdesired,ISOdesired, method, true);

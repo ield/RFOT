@@ -60,16 +60,34 @@ ISO=-20*log10(abs(s41));    % Isolation
 %   the future will be ponterated with the average of the coupled and
 %   direct branches so that it is also reduced.
 %   4. The minimum attenuation
+%
+% The most impotant goal is to satisfy 1 and 2. Then, it is optimized 3 and
+% 4. If they are not satisfied then the solution does not matter.
+%
+% Depending on the method used to calculate the error it is tried to only
+% reduce the separation between branches or both the separation and the
+% attenuation.
 
 % 3.1
+% The weight is scaled to 2.5 because these criteria are the most important
+% ones and need to be satiafied.
 weightRL = 2.5/length(inds)/RLdesired;
 errorRL = weightRL*(RLdesired-RL(inds));
 
 % 3.2
+% The weight is scaled to 2.5 because these criteria are the most important
+% ones and need to be satiafied.
 weightISO = 2.5/length(inds)/ISOdesired;
 errorISO = weightISO*(ISOdesired-ISO(inds));
 
 delta_dir_cou = abs(DIR(inds) - COU(inds)); % Distance between branches, for 3.3
+
+
+% 3.3 and 3.4
+% Depending on the method it is only calculated one or two errors.
+% In both cases it is set a goal, determined empiracally after several
+% tests, which determines the objective of both the attenuation or
+% difference that is targetted.
 
 switch method
     case 1      % It is onl considered the separation between coupled and direct lines
@@ -84,13 +102,13 @@ switch method
         % 3.3 
         diff_goal = 0.5;
         weightDiff = 1/length(inds)/diff_goal;
-        errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
+        errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);  % It is reduced the number of evaluation functions
         
         % 3.4
-        cou_dir_goal = 4.8;          % Best result so far = 0.545
+        cou_dir_goal = 4.8;
         weightAtt = 1/length(inds)/cou_dir_goal;
-        errorDir = weightAtt*(DIR(inds)-cou_dir_goal);
-        errorCou = weightAtt*(COU(inds)-cou_dir_goal);
+        errorDir = weightAtt*(DIR(inds)-cou_dir_goal).*((DIR(inds)-cou_dir_goal)>0);
+        errorCou = weightAtt*(COU(inds)-cou_dir_goal).*((COU(inds)-cou_dir_goal)>0);
         
         error = [errorRL errorISO errorDiff errorDir errorCou];
 
@@ -104,6 +122,7 @@ if draw
     yield = length(find([errorRL errorISO]>0.00001)) / length([errorRL errorISO]);
     Amax = max([COU(inds) DIR(inds)]);
     
+    % difference between maximum and minimum attenuation.
     pass_delta = max([COU(inds) DIR(inds)]) - min([COU(inds) DIR(inds)]);
     
     % Figures
