@@ -25,7 +25,10 @@ ISOdesired=25; %(dB)
 f=linspace(1,4,121);
 inds=find(f>=f1&f<=f2);
 
-errorCoupler(xini,wref,f,inds,f1,f2,RLdesired,ISOdesired, true);
+% Method
+method = 2;
+
+errorCoupler(xini,wref,f,inds,f1,f2,RLdesired,ISOdesired, method, true);
 
 %%
 % Optimization
@@ -42,10 +45,10 @@ ub=[ub_width ub_width ub_width ub_width ub_length ub_length ub_length];
 %
 options=optimset('fmincon');
 options.Display='iter';
-[xopt]=fmincon(@(x) U_Coupler(x, wref, f,inds,f1,f2,RLdesired,ISOdesired, false),...
+[xopt]=fmincon(@(x) U_Coupler(x, wref, f,inds,f1,f2,RLdesired,ISOdesired, method, false),...
                xini,...
                [],[],[],[],lb,ub,[],...
                options);
 
-errorCoupler(xopt,wref,f,inds,f1,f2,RLdesired,ISOdesired, true);
+errorCoupler(xopt,wref,f,inds,f1,f2,RLdesired,ISOdesired, method, true);
 xopt

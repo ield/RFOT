@@ -1,4 +1,4 @@
-function error = errorCoupler(values,wref,f,inds,f1,f2,RLdesired,ISOdesired, draw)
+function error = errorCoupler(values,wref,f,inds,f1,f2,RLdesired,ISOdesired, method, draw)
 
 % Evaluates the error between the measured data and the constraints. 
 %   1. It takes the values and denormalizes the input (or not)
@@ -59,34 +59,53 @@ ISO=-20*log10(abs(s41));    % Isolation
 %   3. The separation between the coupled and direct branch. This error in
 %   the future will be ponterated with the average of the coupled and
 %   direct branches so that it is also reduced.
+%   4. The minimum attenuation
 
-maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zone: the workinf frequency band
 % 3.1
-weightRL = 1/length(inds)/RLdesired;
+weightRL = 2.5/length(inds)/RLdesired;
 errorRL = weightRL*(RLdesired-RL(inds));
-% errorRL = errorRL(1:2:end);
 
 % 3.2
-weightISO = 1/length(inds)/ISOdesired;
+weightISO = 2.5/length(inds)/ISOdesired;
 errorISO = weightISO*(ISOdesired-ISO(inds));
-% errorRL = errorRL(1:2:end);
 
-% 3.3
-delta_dir_cou = abs(DIR(inds) - COU(inds));
-diff_goal = 0.43;          % Best result so far = 0.545
-weightDiff = 1/length(inds)/diff_goal;
-errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
+delta_dir_cou = abs(DIR(inds) - COU(inds)); % Distance between branches, for 3.3
 
-Amax = max([DIR(inds) COU(inds)]); 
+switch method
+    case 1      % It is onl considered the separation between coupled and direct lines
+        % 3.3
+        diff_goal = 0.43;          % Best result so far = 0.545
+        weightDiff = 1/length(inds)/diff_goal;
+        errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
+        error = [errorRL errorISO errorDiff];
+        
+    case 2
+        
+        % 3.3 
+        diff_goal = 0.5;
+        weightDiff = 1/length(inds)/diff_goal;
+        errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
+        
+        % 3.4
+        cou_dir_goal = 4.8;          % Best result so far = 0.545
+        weightAtt = 1/length(inds)/cou_dir_goal;
+        errorDir = weightAtt*(DIR(inds)-cou_dir_goal);
+        errorCou = weightAtt*(COU(inds)-cou_dir_goal);
+        
+        error = [errorRL errorISO errorDiff errorDir errorCou];
 
-error = [errorRL errorISO errorDiff];
-
-
+end
 
 % Step 4
 if draw
+    maxDELTA=max(abs(DIR(inds)-COU(inds)));
     cenDELTA=(DIR(inds)+COU(inds))/2;           % Average between both values. It is later used to plot the lines that go with the graph
 
+    yield = length(find([errorRL errorISO]>0.00001)) / length([errorRL errorISO]);
+    Amax = max([COU(inds) DIR(inds)]);
+    
+    pass_delta = max([COU(inds) DIR(inds)]) - min([COU(inds) DIR(inds)]);
+    
     % Figures
     figure(1)
     %
@@ -97,6 +116,7 @@ if draw
          [f1 f1 f2 f2],ISOdesired+[-10 0 0 -10],'k')
     axis([min(f) max(f) 0 40])
     ylabel('(dB)')
+    title(['Satisfied = ' num2str(yield == 0)]);
     legend('RL',...
            'ISO',...
            'Location','Best')
@@ -105,17 +125,17 @@ if draw
     plot(f,DIR,...
          f,COU,...
          f(inds),cenDELTA+maxDELTA/2,'k',...
-         f(inds),cenDELTA-maxDELTA/2,'k')
+         f(inds),cenDELTA-maxDELTA/2,'k',...
+         f(inds), Amax*ones(1, length(inds)), 'r--')
     axis([min(f) max(f) 2 9])
     xlabel('Frequency (GHz)')
     ylabel('(dB)')
-    title(['\Delta = ' num2str(maxDELTA) ' dB A_{max} = ' num2str(Amax) 'dB'])
+    title(['\Delta = ' num2str(maxDELTA) ' dB: A_{max} = ' num2str(Amax) 'dB; A_{diff} = ' num2str(pass_delta) ' dB'])
     legend('DIR',...
            'COU',...
            'Location','Best')
 
-    yield = length(find([errorRL errorISO]>0.00001)) / length([errorRL errorISO]);
-    fprintf('Yield = %f %', (1-yield)*100);
+    
 end
 
 end
