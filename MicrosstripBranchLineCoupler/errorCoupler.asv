@@ -130,7 +130,7 @@ if draw
     axis([min(f) max(f) 2 9])
     xlabel('Frequency (GHz)')
     ylabel('(dB)')
-    title(['\Delta = ' num2str(maxDELTA) ' dB: A_{max} = ' num2str(Amax) 'dB; A_{diff} = ' num2str(pass_delta) ' dB'])
+    title(['\Delta = ' num2str(maxDELTA) ' dB A_{max} = ' num2str(Amax) 'dB; '])
     legend('DIR',...
            'COU',...
            'Location','Best')
