@@ -62,26 +62,30 @@ ISO=-20*log10(abs(s41));    % Isolation
 
 maxDELTA=max(abs(DIR(inds)-COU(inds)));     % Maximum separation in the inds zone: the workinf frequency band
 % 3.1
-weightRL = 1/length(inds)/RLdesired;
+weightRL = 2.5/length(inds)/RLdesired;
 errorRL = weightRL*(RLdesired-RL(inds));
 % errorRL = errorRL(1:2:end);
 
 % 3.2
-weightISO = 1/length(inds)/ISOdesired;
+weightISO = 2.5/length(inds)/ISOdesired;
 errorISO = weightISO*(ISOdesired-ISO(inds));
 % errorRL = errorRL(1:2:end);
 
 % 3.3
-delta_dir_cou = abs(DIR(inds) - COU(inds));
-diff_goal = 0.43;          % Best result so far = 0.545
-max_delta = max(delta_dir_cou);
-weightDiff = 1/length(inds)/diff_goal;
+
+cou_dir_goal = 5;          % Best result so far = 0.545
+weightAtt = 1/length(inds)/cou_dir_goal;
+errorDir = weightAtt*(DIR(inds)-cou_dir_goal);
+errorCou = weightAtt*(COU(inds)-cou_dir_goal);
+Amax = max([COU(inds) DIR(inds)]);
+
+% delta_dir_cou = abs(DIR(inds) - COU(inds));
+% diff_goal = 0.3;
+% weightDiff = 1/length(inds)/diff_goal;
 % errorDiff = weightDiff*(delta_dir_cou(1:2:end)-diff_goal);  % It is reduced the number of evaluation functions
-errorDiff = weightDiff*(delta_dir_cou-diff_goal).*((delta_dir_cou-diff_goal)>0);
 
-% errorDiff = weightDiff*(max_delta*ones(1, length(inds))-diff_goal);
-
-error = [errorRL errorISO errorDiff];
+% error = [errorRL errorISO errorDiff errorDir errorCou];
+error = [errorRL errorISO errorDir errorCou];
 
 
 
@@ -107,11 +111,12 @@ if draw
     plot(f,DIR,...
          f,COU,...
          f(inds),cenDELTA+maxDELTA/2,'k',...
-         f(inds),cenDELTA-maxDELTA/2,'k')
+         f(inds),cenDELTA-maxDELTA/2,'k',...
+         f(inds), cou_dir_goal*ones(1, length(inds)), 'r--')
     axis([min(f) max(f) 2 9])
     xlabel('Frequency (GHz)')
     ylabel('(dB)')
-    title(['\Delta = ' num2str(maxDELTA) ' dB'])
+    title(['\Delta = ' num2str(maxDELTA) ' dB A_{max} = ' num2str(Amax) 'dB'])
     legend('DIR',...
            'COU',...
            'Location','Best')
