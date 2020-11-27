@@ -1,4 +1,4 @@
-function error=vanderpoloscillator(V,f,t,draw)
+function error=vanderpoloscillator(V,NoHarmonics,draw)
 % VANDERPOLOSCILLATOR computes the current error vector for HB
 %  error=VANDERPOLOSCILLATOR(V,f,t,draw)
 %
@@ -12,6 +12,11 @@ function error=vanderpoloscillator(V,f,t,draw)
 
 %   J. Esteban 7/10/2016
 
+% Recovers f0: Im(V(0)) = 0, so in that possition it is received f0
+f0 = V(length(V)/2+1);  % GHz
+
+% Creates and defines time and frequency domain
+[t,f]=initializeFT(NoHarmonics,f0);
 jomega=1j*2*pi*f;
 n_frec=length(f);
 f_MAX=f(end);
@@ -19,8 +24,14 @@ Delta_t=t(2);
 Delta_f=f(2);
 
 % Recovers amplitudes as complex numbers
-V1=V(1:n_frec,1)+1j*V(n_frec+1:2*n_frec,1);
-V=[V1];
+% In V1, it will be stored the voltages, knowing that not all the values
+% passes in vector V are the voltages at the harmonics:
+%   Im(V(0)) = 0, so in that possition it is received f0
+V1 = zeros(length(V)/2, 1);  
+V1(1) = V(1) + 1j*0; % Im(V(0)) = 0, so in that possition it is received f0
+V1(2:end)=V(2:n_frec,1)+1j*V(n_frec+2:2*n_frec,1);
+V=V1;
+
 % In time domain
 v1=rifftuni(V1);
 
@@ -56,6 +67,8 @@ INL=[I1NL];
 error=YN*V+INL;
 % Split in real and imaginary parts
 error=[real(error);imag(error)];
+error(2) = error(2)/real(V(2));
+error(n_frec+2) = error(n_frec+2)/imag(V(2));
 
 
 %
@@ -66,9 +79,9 @@ error=[real(error);imag(error)];
 if draw
     I=YN*V;
     I1=I;
-    
+    figure('Color','white')
     % Harmonic amplitudes and phases
-    figure(1001)
+    subplot(2, 3, 1)
     plot(f,20*log10(abs(I1)),'r-o',...
          f,20*log10(abs(I1NL)),'m-o')
     legend('|I_1|',...
@@ -77,7 +90,7 @@ if draw
     xlabel('Frequency (GHz)')
     ylabel('(dB/mA)')
 
-    figure(1002)
+    subplot(2, 3, 2)
     plot(f,angle(I1)*(180/pi),'r-o',...
          f,angle(-I1NL)*(180/pi),'m-o')
     legend('<I_1',...
@@ -108,7 +121,7 @@ if draw
     i1dib=repmat(i1dib,Nperiod,1);
     i1nldib=repmat(i1nldib,Nperiod,1);
     %
-    figure(1003)
+    subplot(2, 3, 3)
     plot(tdib,i1dib,'r',...
          tdib,-i1nldib,'m')
     legend('i_1',...
@@ -118,7 +131,7 @@ if draw
     ylabel('(A)')
     xlabel('Time (ns)')
      
-    figure(1004)
+    subplot(2, 3, 4)
     plot(tdib,v1dib,'m')
     legend('v_1')
     ylim(max(abs(v1dib))*1.05*[-1 1]);
@@ -126,14 +139,14 @@ if draw
     ylabel('(V)')
     xlabel('Time (ns)')
      
-    figure(1005)
+    subplot(2, 3, 5)
     plot(f,20*log10(abs(V1)),'m-o')
     legend('|V_1|')
     title('HB Voltage in frequency');
     xlabel('Frequency (GHz)')
     ylabel('(dB/V)')
  
-    figure(1006)
+    subplot(2, 3, 6)
     plot(f,20*log10(abs(I1NL+I1)),'r')
     legend('|I_1+I_{1 NL}|')
     title('HB Errors');
