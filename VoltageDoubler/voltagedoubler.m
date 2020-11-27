@@ -1,4 +1,4 @@
-function error=voltagedoubler(V,f,t,draw)
+function error=voltagedoubler(V,f,t,amplitude, draw)
 % VOLTAGEDOUBLER computes the current error vector for HB
 %   error=VOLTAGEDOUBLER(V,f,t,draw)
 %
@@ -36,7 +36,7 @@ v3=rifftuni(V3);
 %%%
 %
 % Source
-V4=zeros(size(f)); V4(2)=10; % volts
+V4=zeros(size(f)); V4(2)=amplitude; % volts
 % Circuit elements
 RS=10; % ohmios
 RL=50; % ohmios

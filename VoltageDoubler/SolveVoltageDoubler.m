@@ -17,6 +17,12 @@ options=optimoptions('fminunc');
 options.Display='iter';
 % options.MaxFunctionEvaluations=20000;
 %
+amplitudes = 1:0.2:10;      % Try to find a strategy to define these steps in order to obtain a good distribution
+% avoiding the nonlinearity at 10v, without using too much steps, but
+% aoiding non linearities.
+% The increase must be given by the curve of the diode.
+% Make a foor loop using source stepping
+
 [Vopt]=fminunc(@(x) sum(voltagedoubler(x,f,t,false).^2),...
                          Vini,...
                          options);
