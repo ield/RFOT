@@ -27,8 +27,8 @@ n_frec=length(f);
 % Ste starting point
 % It is chosen this starting point because being an oscillator it is
 % expected to have only one (the main) tone.
-Vini=zeros(2*n_frec,1);
-Vini(2) = 1;
+Vini=0.0001*rand(2*n_frec,1);
+% Vini(2) = 1;
 
 options=optimoptions('lsqnonlin');
 options.Algorithm='trust-region-reflective';

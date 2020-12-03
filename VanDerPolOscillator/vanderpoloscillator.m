@@ -90,7 +90,8 @@ if draw
     % Harmonic amplitudes and phases
     subplot(2, 3, 1)
     plot(f,20*log10(abs(I1)),'r-o',...
-         f,20*log10(abs(I1NL)),'m-o')
+         f,20*log10(abs(I1NL)),'m-o',...
+         f,20*log10(abs(I1NL+I1)) - 20*log10(abs(I1NL)), 'o')    % Error dfference
     legend('|I_1|',...
            '|I_{1 NL }|')
     title('HB amplitudes');

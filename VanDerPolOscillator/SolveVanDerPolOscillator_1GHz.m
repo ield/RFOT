@@ -17,8 +17,7 @@ f0 = 1;     % GHz
 n_frec=length(f);
 
 %% Solve by optimization
-Vini=zeros(2*n_frec,1);
-Vini(2) = 1;
+Vini=0.0001*rand(2*n_frec,1);
 
 options=optimoptions('lsqnonlin');
 options.Algorithm='trust-region-reflective';
