@@ -63,7 +63,7 @@ if draw
     fdib=linspace(2.2,2.65,46);
     Z0=50*ones(size(fdib));
     ZL=25+1./(2j*pi*fdib*1.e-3);
-    [rhodib]=stubtuner(Zl,Ll1,Zs1,Ls1,fdib,Z0,ZL);
+    [rhodib]=doublestubtuner(Zl1, Zs1, Ll1, Ls1, Zl2, Zs2, Ll2, Ls2,f,Z0,ZL);
     RLdib=-20*log10(abs(rhodib));
     %
     figure(1)
