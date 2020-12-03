@@ -3,12 +3,14 @@
 % Step 1. It sets and initial frequency (1GHz) and a number of harmonics.
 % Step 2. It is simulated the harmonic balance. All the modifications donde
 %   are explained in vanderpoloscillator function
-%
-% Solutions: The result reached is not satisfactory enough because the error in
-% the third harmonic is comparable to the value of the current. The initial
+
+% Solutions: The result reached should not be satisfactory enough because the error in
+% the third harmonic is comparable to the value of the current. However, 
+% the value of this harmonic is so small that mayba it can be approached to 0.
+% The initial
 % position is determinant to find the solution because the optimization is
-% local. It is chosen this starting point because being an oscillator it is
-% expected to have only one (the main) tone. To decide the number of
+% local. It is chosen a starting point which can be approached to some low noise. 
+% To decide the number of
 % harmonics, this number was increased until increasing it did not imply a
 % strong change in the solution.
 NoHarmonics=50;
