@@ -15,7 +15,9 @@ function error=vanderpoloscillator(V,NoHarmonics,draw)
 % Recovers f0: Im(V(0)) = 0, so in that possition it is received f0
 f0 = V(length(V)/2+1);  % GHz
 
-% Creates and defines time and frequency domain
+% Creates and defines time and frequency domain. Each optimization round,
+% it is modified the value of the main harmonic, so all the other harmonics
+% chage their values.
 [t,f]=initializeFT(NoHarmonics,f0);
 jomega=1j*2*pi*f;
 n_frec=length(f);
@@ -28,8 +30,8 @@ Delta_f=f(2);
 % passes in vector V are the voltages at the harmonics:
 %   Im(V(0)) = 0, so in that possition it is received f0
 V1 = zeros(length(V)/2, 1);  
-V1(1) = V(1) + 1j*0; % Im(V(0)) = 0, so in that possition it is received f0
-V1(2:end)=V(2:n_frec,1)+1j*V(n_frec+2:2*n_frec,1);
+V1(1) = V(1) + 1j*0; % Im(V(0)) = 0, as it was already said
+V1(2:end)=V(2:n_frec,1)+1j*V(n_frec+2:end,1);   % The rest of the inputs are unaltered
 V=V1;
 
 % In time domain
@@ -47,10 +49,10 @@ C=0.009; % nF
 GC=1/1000; % S
 Yen=jomega*C+GC+1./(jomega*L+RL);
 %
-ZERO=zeros(n_frec);
-IDEN=eye(n_frec);
+% ZERO=zeros(n_frec);
+% IDEN=eye(n_frec);
 %
-YN=[diag(Yen)];
+YN=diag(Yen);
 
 
 %
@@ -61,14 +63,19 @@ YN=[diag(Yen)];
 i1nl=(v1.^3)/3-v1;
 % In the frequency domain
 I1NL=fftuni(i1nl);
-INL=[I1NL];
+INL=I1NL;
 
 %%% Current error
-error=YN*V+INL;
+error=(YN*V+INL);   % Impose the error in all the branches
+% One satisfactory solution in an oscillator is that all the harmonic
+% inputs are 0. Therefore, it is impossed the condition that the main
+% harmonic cannot be 0. Imposing kurokowa conditions, since Ylin = Ynl, it
+% is possible to divide the error in the main harmonic by the voltage. This
+% way, when the voltage tends to 0 the error increases.
+error(2) = error(2)/V1(2);
 % Split in real and imaginary parts
 error=[real(error);imag(error)];
-error(2) = error(2)/real(V(2));
-error(n_frec+2) = error(n_frec+2)/imag(V(2));
+
 
 
 %

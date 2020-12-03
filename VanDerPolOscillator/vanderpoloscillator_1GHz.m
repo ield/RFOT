@@ -28,7 +28,7 @@ C = V(n_frec+1);
 % passes in vector V are the voltages at the harmonics:
 %   Im(V(0)) = 0, so in that possition it is received f0
 V1 = zeros(length(V)/2, 1);  
-V1(1) = V(1) + 1j*0; % Im(V(0)) = 0, so in that possition it is received f0
+V1(1) = V(1) + 1j*0; % Im(V(0)) = 0, as it is already stated
 V1(2:end)=V(2:n_frec,1)+1j*V(n_frec+2:2*n_frec,1);
 V=V1;
 
@@ -64,16 +64,15 @@ I1NL=fftuni(i1nl);
 INL=[I1NL];
 
 %%% Current error
-error=YN*V+INL;
+error=(YN*V+INL);   % Impose the error in all the branches
+% One satisfactory solution in an oscillator is that all the harmonic
+% inputs are 0. Therefore, it is impossed the condition that the main
+% harmonic cannot be 0. Imposing kurokowa conditions, since Ylin = Ynl, it
+% is possible to divide the error in the main harmonic by the voltage. This
+% way, when the voltage tends to 0 the error increases.
+error(2) = error(2)/V1(2);
 % Split in real and imaginary parts
 error=[real(error);imag(error)];
-error(2) = error(2)/real(V(2));
-error(n_frec+2) = error(n_frec+2)/imag(V(2));
-% Satisfied condition f = 1 GHz
-I=YN*V;
-I1=I;
-satisfied = max(20*log10(abs(I1))) ~= 20*log10(abs(I1(2)));
-error = error + ones(size(error))*satisfied;
 
 
 %
@@ -82,7 +81,8 @@ error = error + ones(size(error))*satisfied;
 %%%
 %
 if draw
-
+    I=YN*V;
+    I1=I;
     figure('Color','white')
     % Harmonic amplitudes and phases
     subplot(2, 3, 1)
@@ -135,7 +135,7 @@ if draw
     ylabel('(A)')
     xlabel('Time (ns)')
      
-    subplot(2, 3, 4)
+    subplot(2, 3, 6)
     plot(tdib,v1dib,'m')
     legend('v_1')
     ylim(max(abs(v1dib))*1.05*[-1 1]);
@@ -150,12 +150,12 @@ if draw
     xlabel('Frequency (GHz)')
     ylabel('(dB/V)')
  
-    subplot(2, 3, 6)
+    subplot(2, 3, 4)
     plot(f,20*log10(abs(I1NL+I1)),'r')
     legend('|I_1+I_{1 NL}|')
     title('HB Errors');
     xlabel('Frequency (GHz)')
     ylabel('(dB/mA)')
     
-    fprintf('C = %f nF', C);
+    fprintf('C = %f pF\n', C*1e3);
 end
