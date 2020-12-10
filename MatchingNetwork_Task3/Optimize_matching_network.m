@@ -56,7 +56,7 @@ sa_ns=20;
 figure;
 subplot(2, 1, 1);
 rho_opt = matchingnetwork5(xopt, f, Z_S, Z_L, f0);
-plot(f, abs(rho_opt).^2);
+plot(f, -20*log10(abs(rho_opt)));
 xlabel('Frequency (GHz)');
 ylabel('|\rho|^2');
 title('Local + Global results');
@@ -88,7 +88,7 @@ options.Display='iter';
                    min_abs_p_c, min_abs_p_l, 2),xini,lb,ub,options);
 
 rho_opt = matchingnetwork5(xopt, f, Z_S, Z_L, f0);
-plot(f, abs(rho_opt).^2, 'k--');
+plot(f, -20*log10(abs(rho_opt)), 'k--');
 legend('Global', 'Local');
 
 fprintf('Local optimization results\n');
@@ -115,7 +115,7 @@ xini = rand(1,5)-0.5;
 rho_opt_test = matchingnetwork5(xopt_test, f, Z_S, Z_L, f0);
 
 subplot(2, 1, 2)
-plot(f, abs(rho_opt_test).^2);
+plot(f, -20*log10(abs(rho_opt_test)));
 xlabel('Frequency (GHz)');
 ylabel('|\rho|^2');
 title('Using ONLY local optimization...');
