@@ -30,14 +30,14 @@ rho = matchingnetwork5(x, f, Z_S, Z_L, f0);
 
 if(type == 1)
     % Error 1
-    error1 = sum(abs(rho).^2);
+    error1 = sum(abs(rho));
 
     % Error 2
     rho_deviation = abs(rho - mean(rho));
     error2 = sum(abs(rho_deviation).^2);
 
-    error = sqrt(error1^2 + error2^2);
-%     error = error1;
+%     error = sqrt(error1^2 + error2^2);
+    error = error1;
     
 else 
     % Error 1

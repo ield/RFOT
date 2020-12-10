@@ -19,7 +19,7 @@ xini = rand(1,5)-0.5;
 % available in RS (https://es.rs-online.com/web/) and then corrected seeing
 % which values lead to errors: l>2nH and c>10pf, c<0.5 pf
 
-c_max = 100e-12;       % Value in F
+c_max = 50e-12;       % Value in F
 c_min = 0.5e-12;      % Value in F
 % Minimum abs(P) that can be obtained when C = c_min. Approx = 1.38e-7
 min_abs_p_c = 1/(2*pi*f0*1e9*c_max);
@@ -27,7 +27,7 @@ min_abs_p_c = 1/(2*pi*f0*1e9*c_max);
 min_par = -1/(2*pi*f0*1e9*c_min);
 
 l_min = 100e-12;      % Value in H
-l_max = 10e-9;         % Value in H
+l_max = 5e-9;         % Value in H
 % Minimum abs(P) that can be obtained when L = l_max. Approx = 1.5394
 min_abs_p_l = 2*pi*f0*1e9*l_min;
 % Maximum P that can be obtained when L = L_max. Approx = 6e6
