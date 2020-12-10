@@ -37,6 +37,7 @@ if(type == 1)
     error2 = sum(abs(rho_deviation).^2);
 
     error = sqrt(error1^2 + error2^2);
+%     error = error1;
     
 else 
     % Error 1

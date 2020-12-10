@@ -19,7 +19,7 @@ xini = rand(1,5)-0.5;
 % available in RS (https://es.rs-online.com/web/) and then corrected seeing
 % which values lead to errors: l>2nH and c>10pf, c<0.5 pf
 
-c_max = 10e-12;       % Value in F
+c_max = 100e-12;       % Value in F
 c_min = 0.5e-12;      % Value in F
 % Minimum abs(P) that can be obtained when C = c_min. Approx = 1.38e-7
 min_abs_p_c = 1/(2*pi*f0*1e9*c_max);
@@ -27,7 +27,7 @@ min_abs_p_c = 1/(2*pi*f0*1e9*c_max);
 min_par = -1/(2*pi*f0*1e9*c_min);
 
 l_min = 100e-12;      % Value in H
-l_max = 2e-9;         % Value in H
+l_max = 10e-9;         % Value in H
 % Minimum abs(P) that can be obtained when L = l_max. Approx = 1.5394
 min_abs_p_l = 2*pi*f0*1e9*l_min;
 % Maximum P that can be obtained when L = L_max. Approx = 6e6
@@ -46,7 +46,7 @@ ub = max_par*ones(1, 5);
 % The other parameters are left as they were.
 
 sa_t=1000;  
-sa_rt=0.45;
+sa_rt=0.85;
 sa_nt=5;
 sa_ns=20;
 [xopt,fopt]=simann(@(x) Matching_network_objective(x, f, Z_S, Z_L, f0, ...
@@ -58,7 +58,7 @@ subplot(2, 1, 1);
 rho_opt = matchingnetwork5(xopt, f, Z_S, Z_L, f0);
 plot(f, -20*log10(abs(rho_opt)));
 xlabel('Frequency (GHz)');
-ylabel('|\rho|^2');
+ylabel('RL');
 title('Local + Global results');
 hold on;
 
@@ -117,5 +117,5 @@ rho_opt_test = matchingnetwork5(xopt_test, f, Z_S, Z_L, f0);
 subplot(2, 1, 2)
 plot(f, -20*log10(abs(rho_opt_test)));
 xlabel('Frequency (GHz)');
-ylabel('|\rho|^2');
+ylabel('RL');
 title('Using ONLY local optimization...');
